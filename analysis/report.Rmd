@@ -1,0 +1,46 @@
+---
+title: "INFLASCOPE Research Summary"
+output: html_document
+---
+
+```{r setup}
+library(inflascope)
+cpi <- get_static_data("cpi")
+hces <- get_static_data("hces")
+```
+
+## Introduction and research questions
+
+What are observed all-India rural and urban price differences, and how do consumption weights affect modeled basket burden?
+
+## Data sources and preparation
+
+MoSPI CPI base 2024=100, published rate observations and HCES 2023–24 non-imputed MPCE (see README).
+
+## Rural–urban inflation trends
+
+```{r}
+print(cpi[,c("date","sector","inflation_yoy","index")])
+print(compare_rural_urban(data=cpi))
+```
+
+## Household consumption differences
+
+```{r}
+print(hces)
+```
+
+## Scenario experiment (hypothetical)
+
+```{r}
+print(inflation_burden(c(Food=8,`Non-food`=4)))
+print(simulate_budget(25000,c(Food=.47,`Non-food`=.53),c(Food=8,`Non-food`=4)))
+```
+
+## Forecasting methodology and evaluation
+
+The bundled reference dates are discontinuous. Forecasts and MAE/RMSE are intentionally withheld until sufficiently long, compatible monthly data are imported.
+
+## Limitations and conclusions
+
+Modelled constant-quantity basket costs are not empirical behavioural changes or causal effects. No 2012-base to 2024-base concatenation is performed. Stronger inferences require harmonized time-series data and household microdata.

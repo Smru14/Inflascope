@@ -1,0 +1,45 @@
+---
+title: "Getting Started with INFLASCOPE"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with INFLASCOPE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, message = FALSE}
+library(inflascope)
+```
+
+## Observed data
+
+```{r}
+cpi <- get_cpi_data("static")
+get_latest_cpi(cpi)[, c("date", "sector", "index", "inflation_yoy")]
+cmp <- compare_rural_urban(data = cpi)
+generate_insights(cmp)
+compare_rural_urban(data = cpi, category = "Food and beverages")$difference
+head(get_cpi_detail(state = "Tamil Nadu", sector = "Rural", category = "General"))
+```
+
+## Hypothetical household calculations
+
+```{r}
+personal_inflation(c(Food = .47, `Non-food` = .53), c(Food = 8, `Non-food` = 4))$inflation_pct
+s <- simulate_budget(25000, c(Food = .47, `Non-food` = .53), c(Food = 8, `Non-food` = 4),
+                     years = 2, budget = 28000)
+s$projected
+s$budget_gap
+```
+
+## The 10,000 synthetic scenarios
+
+```{r}
+scen <- get_scenario_data()
+nrow(scen)
+summarise_scenarios(scen, by = c("profile", "years"))
+```
+
+These rows are calculated from `simulate_budget()`; they are not household survey records.
+
+Launch the interactive dashboard with `launch_app()`.

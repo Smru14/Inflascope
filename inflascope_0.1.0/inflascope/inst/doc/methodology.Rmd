@@ -1,0 +1,20 @@
+---
+title: "Methodology and limitations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methodology and limitations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+**Inflation between index levels:** $100 \times (CPI_t / CPI_{t-k} - 1)$, with $k = 12$ for year-on-year monthly data.
+
+**Fixed basket:** $\pi = \sum_i w_i r_i$, where weights sum to one and rates refer to one consistent period. This is a modelled basket rate, not the official CPI.
+
+**Budget projection:** $E_{future} = \sum_i E_i (1 + r_i/100)^T$. Quantities are fixed and annual category prices compound; substitution and behavioural responses are not modelled.
+
+**Scenario grid:** `generate_scenarios()` crosses 2 profiles (HCES rural and urban food shares), 10 spending levels, 10 food rates, 10 non-food rates and 5 horizons, giving 10,000 rows. The budget is 110% of current spending by default.
+
+**Forecasting:** ARIMA and seasonal naive models forecast CPI index levels and require at least 18 consecutive months on the same base. The bundled MoSPI series (January 2025 to September 2026) has 21, so forecasts are possible but should be read as indicative. `evaluate_forecast()` uses a chronological holdout and reports MAE and RMSE.
+
+**Limitations:** HCES shares are consumption benchmarks, not CPI weights. Descriptive comparisons do not establish causal effects of inflation on consumer spending.

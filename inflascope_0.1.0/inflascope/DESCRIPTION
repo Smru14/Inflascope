@@ -1,0 +1,20 @@
+Package: inflascope
+Title: Rural and Urban Inflation Intelligence for India
+Version: 0.1.0
+Authors@R: person("INFLASCOPE", "Contributors", email = "maintainers@example.org", role = c("aut", "cre"))
+Description: An offline-first analytical toolkit and interactive Shiny interface
+    for official Indian consumer price indices and household expenditure
+    benchmarks. Separates observed data from hypothetical household scenarios.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.2.0)
+Imports: stats, utils, tools, shiny, bslib, ggplot2, plotly, DT,
+        forecast
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+RoxygenNote: 7.3.1
+NeedsCompilation: no
+Packaged: 2026-10-25 11:41:01 UTC; root
+Author: INFLASCOPE Contributors [aut, cre]
+Maintainer: INFLASCOPE Contributors <maintainers@example.org>

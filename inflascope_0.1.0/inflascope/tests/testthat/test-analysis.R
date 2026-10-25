@@ -1,0 +1,60 @@
+test_that("latest CPI, metadata and insights are consistent", {
+  x <- get_static_data("cpi")
+  l <- get_latest_cpi(x)
+  expect_setequal(l$sector, c("Rural", "Urban", "Combined"))
+  expect_true(all(l$date == as.Date("2026-09-01")))
+  m <- get_data_metadata(get_cpi_data("static"))
+  expect_equal(m$source, "Bundled official snapshot")
+  expect_equal(m$base_year, "2024=100")
+  expect_match(generate_insights(compare_rural_urban(data = x)), "Rural year-on-year inflation was higher by 1.20")
+  idx <- compare_rural_urban(data = x, measure = "index")
+  expect_equal(idx$difference, 110.11 - 108.71, tolerance = 1e-8)
+})
+
+test_that("burden uses HCES shares and simulate_budget compounds", {
+  b <- inflation_burden(c(Food = 8, `Non-food` = 4))
+  expect_equal(b$rural$inflation_pct, 0.4704 * 8 + 0.5296 * 4, tolerance = 1e-8)
+  expect_equal(b$urban$inflation_pct, 0.3968 * 8 + 0.6032 * 4, tolerance = 1e-8)
+  expect_error(inflation_burden(c(Food = 8, Other = 4)))
+  s <- simulate_budget(1000, c(Food = .5, Other = .5), c(Food = 10, Other = 0), years = 2)
+  expect_equal(s$projected, 500 * 1.1^2 + 500)
+  expect_true(is.na(s$budget_gap))
+  expect_error(simulate_budget(1000, c(Food = 1), c(Food = -100)))
+})
+
+test_that("CPI validation rejects malformed rows", {
+  x <- get_static_data("cpi")
+  y <- x; y$date[1] <- as.Date("2026-01-15"); expect_error(validate_cpi_data(y), "first-of-month")
+  y <- x; y$index[1] <- -1; expect_error(validate_cpi_data(y), "positive")
+  y <- x; y$source_url[1] <- "http://insecure"; expect_error(validate_cpi_data(y), "HTTPS")
+  expect_error(validate_cpi_data(x[0, ]), "empty")
+})
+
+test_that("import writes a validated cache and get_cpi_data prefers it", {
+  old <- Sys.getenv("R_USER_CACHE_DIR")
+  tmp <- tempfile("cache"); Sys.setenv(R_USER_CACHE_DIR = tmp)
+  on.exit({ Sys.setenv(R_USER_CACHE_DIR = old); unlink(tmp, recursive = TRUE) }, add = TRUE)
+  expect_error(get_cpi_data("cache"), "No compatible validated cache")
+  f <- tempfile(fileext = ".csv")
+  utils::write.csv(get_static_data("cpi"), f, row.names = FALSE)
+  imported <- import_cpi_csv(f)
+  expect_equal(nrow(imported), 819)
+  expect_equal(attr(get_cpi_data("auto"), "data_source"), "Validated local cache")
+  expect_error(import_cpi_csv(file.path(tmp, "missing.csv")))
+})
+
+test_that("bundled MoSPI series is complete and consistent", {
+  x <- get_static_data("cpi")
+  expect_equal(nrow(x), 21 * 3 * 13)
+  g <- x[x$category == "General" & x$sector == "Rural", ]
+  expect_equal(range(g$date), as.Date(c("2025-01-01", "2026-09-01")))
+  expect_true(all(diff(sort(g$date)) <= 31))
+  sep <- g[g$date == as.Date("2026-09-01"), ]
+  expect_equal(calculate_inflation(g$index[g$date == as.Date("2025-09-01")], sep$index), sep$inflation_yoy, tolerance = 0.01)
+  food <- compare_rural_urban(data = x, category = "Food and beverages")
+  expect_equal(food$rural, 7.71)
+  d <- get_cpi_detail(state = "Tamil Nadu", sector = "Rural", category = "General")
+  expect_equal(nrow(d), 21)
+  expect_equal(nrow(get_static_data("cpi_detail")), 30030)
+  expect_error(get_cpi_detail(state = "Atlantis"), "Unknown state")
+})

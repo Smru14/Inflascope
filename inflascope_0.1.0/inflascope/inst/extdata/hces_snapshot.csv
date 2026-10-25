@@ -1,0 +1,5 @@
+period,sector,mpce_inr,category,share,imputation,geography,source_url,dataset_version
+2023-24,Rural,4122,Food,0.4704,excluded,All India,https://mospi.gov.in/sites/default/files/publication_reports/HCES%20FactSheet%202023-24.pdf,2026-10-24-v1
+2023-24,Rural,4122,Non-food,0.5296000000000001,excluded,All India,https://mospi.gov.in/sites/default/files/publication_reports/HCES%20FactSheet%202023-24.pdf,2026-10-24-v1
+2023-24,Urban,6996,Food,0.3968,excluded,All India,https://mospi.gov.in/sites/default/files/publication_reports/HCES%20FactSheet%202023-24.pdf,2026-10-24-v1
+2023-24,Urban,6996,Non-food,0.6032,excluded,All India,https://mospi.gov.in/sites/default/files/publication_reports/HCES%20FactSheet%202023-24.pdf,2026-10-24-v1

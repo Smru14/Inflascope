@@ -1,0 +1,17 @@
+---
+title: "Getting Started with INFLASCOPE"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with INFLASCOPE}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(inflascope)
+calculate_inflation(150,159)
+compare_rural_urban()
+simulate_budget(25000,c(Food=.47,`Non-food`=.53),c(Food=8,`Non-food`=4))
+```
+
+Launch the interactive app using `launch_app()`. Numerical basket inputs are illustrative assumptions.

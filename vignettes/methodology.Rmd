@@ -1,0 +1,12 @@
+---
+title: "Methodology and limitations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methodology and limitations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The fixed basket rate is $\sum_i w_i r_i$. All categories must have consistent, named price-change periods. The cost scenario retains fixed quantities. Published CPI and HCES data differ in methodology; do not interpret a simulated burden as the official CPI.
+
+The shipped monthly CPI rows are deliberately sparse. To run ARIMA forecasting, import a verified contiguous CPI 2024-base monthly series covering at least 24 months. Read `docs/research-methodology.md` for full details.
